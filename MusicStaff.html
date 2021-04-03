@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chord Builder</title>
+    <link rel="stylesheet" href="/Assets/MusicStaff.css">
+    <script src="snap.svg-min.js"></script>
+</head>
+
+<body>
+    <!-- Numbers from top to bottom -->
+        <div id="upperButtons">
+            <div class="button" id="sharp">
+                <img src="" alt="">
+            </div>
+            <div class="button" id="flat">
+                <img src="" alt="">
+            </div>
+            <div class="button" id="bass">
+                <img src="" alt="">
+            </div>
+            <div class="button" id="treble">
+                <img src="" alt="">
+            </div>
+        </div>
+        <div id="mainStaff">
+            <div id="trebleClef">
+                <img src="/Assets/5a02cb3018e87004f1ca43e5.png" height="100" />
+            </div>
+            <div id="bassClef">
+                <img src="/Assets/clef-bass-treble-music-bass-clef-915bb578a28543722faeb869d06f8b43.png" height=55" />
+            </div>
+            <svg class="line out" id="17" trebleValue="" bassValue=""></svg>
+            <svg class="space out" id="16" trebleValue="" bassValue=""></svg>
+            <svg class="line out" id="15" trebleValue="" bassValue=""></svg>
+            <svg class="space out" id="14" trebleValue="" bassValue=""></svg>
+            <svg class="line" id="13" trebleValue="" bassValue=""></svg>
+            <svg class="space" id="12" trebleValue="" bassValue=""></svg>
+            <svg class="line" id="11" trebleValue="" bassValue=""></svg>
+            <svg class="space" id="10" trebleValue="" bassValue=""></svg>
+            <svg class="line" id="9" trebleValue="" bassValue=""></svg>
+            <svg class="space" id="8" trebleValue="" bassValue=""></svg>
+            <svg class="line" id="7" trebleValue="" bassValue=""></svg>
+            <svg class="space" id="6" trebleValue="" bassValue=""></svg>
+            <svg class="line" id="5" trebleValue="" bassValue=""></svg>
+            <svg class="space out" id="4" trebleValue="" bassValue=""></svg>
+            <svg class="line out" id="3" trebleValue="" bassValue=""></svg>
+            <svg class="space out" id="2" trebleValue="" bassValue=""></svg>
+            <svg class="line out" id="1" trebleValue="" bassValue=""></svg>
+        </div>
+        <div id="chordNameDiv">
+            <h1 id="chordName"></h1>
+        </div>
+        <script src="/Assets/MusicStaff.js"></script>
+</body>
+
+</html>
