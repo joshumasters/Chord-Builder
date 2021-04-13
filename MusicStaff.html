@@ -12,20 +12,25 @@
 
 <body>
     <!-- Numbers from top to bottom -->
-        <div id="upperButtons">
-            <div class="button" id="sharp">
-                <img src="" alt="">
-            </div>
-            <div class="button" id="flat">
-                <img src="" alt="">
-            </div>
-            <div class="button" id="bass">
-                <img src="" alt="">
-            </div>
-            <div class="button" id="treble">
-                <img src="" alt="">
-            </div>
+    <div id="upperButtons">
+        <div class="button accident-button" id="sharp" active="0">
+            <h3>sharp</h3>
+            <img src="" alt="">
         </div>
+        <div class="button accident-button" id="flat" active="0">
+            <h3>flat</h3>
+            <img src="" alt="">
+        </div>
+        <div class="button clef-button" id="bass" active="0">
+            <h3>Bass Clef</h3>
+            <img src="" alt="">
+        </div>
+        <div class="button clef-button green-glow-perma" id="treble" active="1">
+            <h3>Treble Clef</h3>
+            <img src="" alt="">
+        </div>
+    </div>
+    <div id="mainStaffDiv">
         <div id="mainStaff">
             <div id="trebleClef">
                 <img src="/Assets/5a02cb3018e87004f1ca43e5.png" height="100" />
@@ -51,10 +56,11 @@
             <svg class="space out" id="2" trebleValue="" bassValue=""></svg>
             <svg class="line out" id="1" trebleValue="" bassValue=""></svg>
         </div>
-        <div id="chordNameDiv">
-            <h1 id="chordName"></h1>
-        </div>
-        <script src="/Assets/MusicStaff.js"></script>
+    </div>
+    <div id="chordNameDiv">
+        <h1 id="chordName"></h1>
+    </div>
+    <script src="/Assets/MusicStaff.js"></script>
 </body>
 
 </html>
