@@ -85,5 +85,8 @@ svg{
     border: 4px solid greenyellow;
     box-shadow: 0 0 10px #31b43a;
 }
+.yellow-perma{
+    background-color: yellow;
+}
 
 

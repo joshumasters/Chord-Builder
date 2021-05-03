@@ -7,8 +7,9 @@ let trebleButton = document.getElementById('treble');
 let bassButton = document.getElementById('bass');
 let trebleClef = document.getElementById('trebleClef');
 let bassClef = document.getElementById('bassClef');
-
 let buttons = document.getElementsByClassName('button');
+
+let selectedNotes = [];
 
 let trebleArray = {
     active: true,
@@ -24,13 +25,28 @@ let bassArray = {
     [25, 'A'], [27, 'B'], [28, 'C'], [30, 'D'], [32, 'E']]
 }
 
+//Adds Listeners to Buttons
 for (let i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener("mouseover", function () { buttons[i].classList.add('green-glow') })
     buttons[i].addEventListener("mouseleave", function () { buttons[i].classList.remove('green-glow') });
     buttons[i].addEventListener("click", function () { buttonClick(buttons[i]) })
 }
 
-// Add check at some point to account for both clefs being turned 'off'
+//Assigns Listeners and Note values to HTML line elements
+let arrayIndex = 16;
+for (let i = 0; i < lines.length; i++, arrayIndex--) {
+    lines[i].trebleValue = trebleArray.notes[arrayIndex];
+    lines[i].bassValue = bassArray.notes[arrayIndex];
+    lines[i].selected = '0';
+    lines[i].accidental = '0';
+    lines[i].addEventListener("mouseover", function () { lines[i].style.backgroundColor = 'yellow' });
+    lines[i].addEventListener("mouseleave", function () { lines[i].style.backgroundColor = '' });
+    lines[i].addEventListener("click", function () { clickLine(lines[i]) });
+
+}
+
+//Add check at some point to account for both clefs being turned 'off'
+//Adds basic button functionality and styling onclick
 function buttonClick(button) {
     if (button.active === 1) {
         button.classList.remove('green-glow-perma');
@@ -39,7 +55,7 @@ function buttonClick(button) {
         return;
     }
     let buttonClass = document.getElementsByClassName(button.classList[1]);
-    for(let i = 0; i < buttonClass.length; i++){
+    for (let i = 0; i < buttonClass.length; i++) {
         buttonClass.item(i).classList.remove('green-glow-perma');
         buttonClass.item(i).active = 0;
     }
@@ -53,30 +69,145 @@ function buttonClick(button) {
         trebleClef.style.display = 'block';
         bassClef.style.display = 'none';
     }
-    console.log('Clicked button has active value of: ' + button.active);
+    bassOrTreble()
 }
 
-
-
-let arrayIndex = 16;
-for (let i = 0; i < lines.length; i++, arrayIndex--) {
-    lines[i].trebleValue = trebleArray.notes[arrayIndex];
-    lines[i].bassValue = bassArray.notes[arrayIndex];
-    lines[i].addEventListener("mouseover", function () { lines[i].style.backgroundColor = 'yellow' });
-    lines[i].addEventListener("mouseleave", function () { lines[i].style.backgroundColor = '' });
-    lines[i].addEventListener("click", function () { showChordName(lines[i]) });
-
-}
-
-function showChordName(pickedLine) {
-    if (sharpButton.active == 1) {
-        chordName.innerHTML = pickedLine.trebleValue[1] + '#';
-    } else if (flatButton.active == 1) {
-        chordName.innerHTML = pickedLine.trebleValue[1] + 'b';
+//This is the start of where the magic happens
+function clickLine(pickedLine) {
+    //Handles adding and removing from selectedNotes array
+    if (pickedLine.selected == "0") {
+        if (selectedNotes.length === 4) {
+            selectedNotes[3].selected = '0'
+            selectedNotes[3].classList.remove('yellow-perma')
+            selectedNotes.pop()
+        }
+        //Assigns accidentals to lines where appropriate
+        if (sharpButton.active == 1) {
+            pickedLine.accidental = '1'
+        } else if (flatButton.active == 1) {
+            pickedLine.accidental = '-1'
+        }
+        pickedLine.selected = '1'
+        pickedLine.classList.add('yellow-perma')
+        selectedNotes.push(pickedLine);
     } else {
-        chordName.innerHTML = pickedLine.trebleValue[1];
+        selectedNotes.forEach((node, index) => {
+            if(pickedLine === node){
+                selectedNotes.splice(index, 1);
+            }
+        })
+        pickedLine.classList.remove('yellow-perma')
+        pickedLine.accidental = '0'
+        pickedLine.selected = '0'
+    }
+    //Sorts array by numeral note value ascending
+    selectedNotes.sort((a, b) => a.trebleValue[0] - b.trebleValue[0])
+    selectedNotes.forEach((node) => console.log(node.accidental))
+    bassOrTreble()
+}
+
+function bassOrTreble(){
+    //Add accidentals to mappings
+    selectedNotes.forEach((node) => console.log(node.trebleValue))
+    if (bassButton.active == "1") {
+        //Mapping only the clef-appropriate values to variable to doTheory with
+        let bassNotes = selectedNotes.map((node) => addAccidental(node.bassValue, node.accidental))
+        doTheory(bassNotes)
+    } else {
+        let trebleNotes = selectedNotes.map((node) => addAccidental(node.trebleValue, node.accidental))
+        doTheory(trebleNotes)
     }
 }
+
+//Utility function 
+function addAccidental(nodeValues, accidental){
+    nodeValues[0] += parseInt(accidental)
+    if(accidental == '1'){
+        nodeValues[1] += '#'
+    } else if(accidental == '-1'){
+        nodeValues[1] += 'b'
+    }
+    return nodeValues
+}
+
+function doTheory(notesToParse) {
+    // Two Notes - Interval Case
+    console.log(`notesToParse are ${notesToParse}`)
+    if (notesToParse.length == 2) {
+        let intervalValue = notesToParse[1][0] + notesToParse[1] - notesToParse[0][0]
+        let realValue = intervalValue % 12
+        let numOfOctaves = Math.floor(intervalValue / 12)
+        console.log(`realValue is ${realValue} and numOfOctaves is ${numOfOctaves}`)
+
+
+    }
+    //Three or More Notes - Chordal Case
+    else if (notesToParse.length > 2) {
+
+    }
+}
+
+function checkInterval(realValue) {
+    switch (realValue) {
+        case 0:
+            return "Octave";
+            break;
+        case 1:
+            return "Minor 2nd";
+            break;
+        case 2:
+            return "Major 2nd";
+            break;
+        case 3:
+            return "Minor 3rd";
+            break;
+        case 4:
+            return "Major 3rd";
+            break;
+        case 5:
+            return "Perfect 4th";
+            break;
+        case 6:
+            return "Tritone/b5";
+            break;
+        case 7:
+            return "Perfect 5th";
+            break;
+        case 8:
+            return "Minor 6th";
+            break;
+        case 9:
+            return "Major 6th";
+            break;
+        case 10:
+            return "Minor 7th";
+            break;
+        case 11:
+            return "Major 7th";
+            break;
+    }
+}
+
+// function showChordName(pickedLine) {
+//     if (bassButton.active === 1) {
+//         if (sharpButton.active == 1) {
+//             chordName.innerHTML = pickedLine.bassValue[1] + '#';
+//         } else if (flatButton.active == 1) {
+//             chordName.innerHTML = pickedLine.bassValue[1] + 'b';
+//         } else {
+//             chordName.innerHTML = pickedLine.bassValue[1];
+//         }
+//     } else {
+//         if (sharpButton.active == 1) {
+//             chordName.innerHTML = pickedLine.trebleValue[1] + '#';
+//         } else if (flatButton.active == 1) {
+//             chordName.innerHTML = pickedLine.trebleValue[1] + 'b';
+//         } else {
+//             chordName.innerHTML = pickedLine.trebleValue[1];
+//         }
+//     }
+
+// }
 
 
 
