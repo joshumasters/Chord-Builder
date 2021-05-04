@@ -121,25 +121,32 @@ function bassOrTreble(){
 
 //Utility function 
 function addAccidental(nodeValues, accidental){
-    nodeValues[0] += parseInt(accidental)
+    let char = '';
     if(accidental == '1'){
-        nodeValues[1] += '#'
+        char = '#'
     } else if(accidental == '-1'){
-        nodeValues[1] += 'b'
+        char = 'b'
     }
-    return nodeValues
+    let moddedNotes = [nodeValues[0] + parseInt(accidental), nodeValues[1] + char]
+    return moddedNotes
 }
 
 function doTheory(notesToParse) {
     // Two Notes - Interval Case
     console.log(`notesToParse are ${notesToParse}`)
+    if(notesToParse.length == 1){
+        chordName.innerHTML = notesToParse[0][1]
+    }
     if (notesToParse.length == 2) {
-        let intervalValue = notesToParse[1][0] + notesToParse[1] - notesToParse[0][0]
+        let intervalValue = notesToParse[1][0] - notesToParse[0][0]
         let realValue = intervalValue % 12
         let numOfOctaves = Math.floor(intervalValue / 12)
-        console.log(`realValue is ${realValue} and numOfOctaves is ${numOfOctaves}`)
-
-
+        chordName.innerHTML = checkInterval(realValue)
+        if(numOfOctaves > 0 && checkInterval(realValue) != "Octave"){
+            chordName.append(" + " + numOfOctaves + " Octaves")
+        } else if(numOfOctaves > 1 && checkInterval(realValue) == "Octave"){
+            chordName.innerHTML = numOfOctaves + " Octaves"
+        }
     }
     //Three or More Notes - Chordal Case
     else if (notesToParse.length > 2) {
