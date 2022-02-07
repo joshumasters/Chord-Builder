@@ -8,6 +8,7 @@
     <title>Chord Builder</title>
     <link rel="stylesheet" href="/Assets/MusicStaff.css">
     <script src="snap.svg-min.js"></script>
+    <link rel="stylesheet" href="print.css" media="print">
 </head>
 
 <body>
@@ -15,19 +16,15 @@
     <div id="upperButtons">
         <div class="button accident-button" id="sharp" active="0">
             <h3>sharp</h3>
-            <img src="" alt="">
         </div>
         <div class="button accident-button" id="flat" active="0">
             <h3>flat</h3>
-            <img src="" alt="">
         </div>
         <div class="button clef-button" id="bass" active="0">
             <h3>Bass Clef</h3>
-            <img src="" alt="">
         </div>
         <div class="button clef-button green-glow-perma" id="treble" active="1">
             <h3>Treble Clef</h3>
-            <img src="" alt="">
         </div>
     </div>
     <div id="mainStaffDiv">
@@ -59,6 +56,9 @@
     </div>
     <div id="chordNameDiv">
         <h1 id="chordName"></h1>
+    </div>
+    <div id="selectedNotes">
+        <h1 id="noteDisplay"></h1>
     </div>
     <script src="/Assets/MusicStaff.js"></script>
 </body>

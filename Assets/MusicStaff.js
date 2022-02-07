@@ -8,6 +8,7 @@ let bassButton = document.getElementById('bass');
 let trebleClef = document.getElementById('trebleClef');
 let bassClef = document.getElementById('bassClef');
 let buttons = document.getElementsByClassName('button');
+let noteDisplay = document.getElementById('noteDisplay');
 
 let selectedNotes = [];
 
@@ -75,6 +76,8 @@ function buttonClick(button) {
 //This is the start of where the magic happens
 function clickLine(pickedLine) {
     //Handles adding and removing from selectedNotes array
+    chordName.innerHTML = ''
+    //If pickedLine is not active
     if (pickedLine.selected == "0") {
         if (selectedNotes.length === 4) {
             selectedNotes[3].selected = '0'
@@ -90,9 +93,10 @@ function clickLine(pickedLine) {
         pickedLine.selected = '1'
         pickedLine.classList.add('yellow-perma')
         selectedNotes.push(pickedLine);
+        //If pickedLine is already active
     } else {
         selectedNotes.forEach((node, index) => {
-            if(pickedLine === node){
+            if (pickedLine === node) {
                 selectedNotes.splice(index, 1);
             }
         })
@@ -106,50 +110,118 @@ function clickLine(pickedLine) {
     bassOrTreble()
 }
 
-function bassOrTreble(){
+//Interprets notes in the context of either the Treble or Bass Clef
+function bassOrTreble() {
     //Add accidentals to mappings
     selectedNotes.forEach((node) => console.log(node.trebleValue))
+    noteDisplay.innerHTML = null;
     if (bassButton.active == "1") {
         //Mapping only the clef-appropriate values to variable to doTheory with
         let bassNotes = selectedNotes.map((node) => addAccidental(node.bassValue, node.accidental))
+        bassNotes.forEach((note) => noteDisplay.append(note[1] + " "));
         doTheory(bassNotes)
     } else {
         let trebleNotes = selectedNotes.map((node) => addAccidental(node.trebleValue, node.accidental))
+        trebleNotes.forEach((note) => noteDisplay.append(note[1] + " "));
         doTheory(trebleNotes)
     }
 }
 
 //Utility function 
-function addAccidental(nodeValues, accidental){
+function addAccidental(nodeValues, accidental) {
     let char = '';
-    if(accidental == '1'){
+    if (accidental == '1') {
         char = '#'
-    } else if(accidental == '-1'){
+    } else if (accidental == '-1') {
         char = 'b'
     }
     let moddedNotes = [nodeValues[0] + parseInt(accidental), nodeValues[1] + char]
     return moddedNotes
 }
 
+//Parses selected notes 
 function doTheory(notesToParse) {
-    // Two Notes - Interval Case
     console.log(`notesToParse are ${notesToParse}`)
-    if(notesToParse.length == 1){
+    //One Note Case
+    if (notesToParse.length == 1) {
         chordName.innerHTML = notesToParse[0][1]
     }
+    // Two Notes - Interval Case
     if (notesToParse.length == 2) {
         let intervalValue = notesToParse[1][0] - notesToParse[0][0]
         let realValue = intervalValue % 12
         let numOfOctaves = Math.floor(intervalValue / 12)
         chordName.innerHTML = checkInterval(realValue)
-        if(numOfOctaves > 0 && checkInterval(realValue) != "Octave"){
+        if (numOfOctaves > 0 && checkInterval(realValue) != "Octave") {
             chordName.append(" + " + numOfOctaves + " Octaves")
-        } else if(numOfOctaves > 1 && checkInterval(realValue) == "Octave"){
+        } else if (numOfOctaves > 1 && checkInterval(realValue) == "Octave") {
             chordName.innerHTML = numOfOctaves + " Octaves"
         }
     }
     //Three or More Notes - Chordal Case
     else if (notesToParse.length > 2) {
+        //Creates and loads array of interval sizes between notes
+        let intervals = []
+        for (let i = 1; i < notesToParse.length; i++) {
+            if(notesToParse[i][0] - notesToParse[i - 1][0] > 12){
+                intervals.push(notesToParse[i][0] - notesToParse[i - 1][0] - 12)
+            } else {
+                intervals.push(notesToParse[i][0] - notesToParse[i - 1][0])
+            }
+        }
+        console.log(`Intervals are ${intervals}`)
+        //Three Note Case
+        if (intervals.length == 2) {
+            //Major 3rd
+            if (intervals[0] == 4) {
+                if (intervals[1] == 3) {
+                    chordName.innerHTML = notesToParse[0][1] + " Major"
+                }
+                if (intervals[1] == 4) {
+                    chordName.innerHTML = notesToParse[0][1] + " Augmented"
+                }
+                //1st Inversion Minor Chord (Grabbing Explicit Note Value From 3rd)
+                if (intervals[1] == 5) {
+                    chordName.innerHTML = notesToParse[2][1] + " Minor - 1st Inversion"
+                }
+
+        }
+            //Minor 3rd
+            if (intervals[0] == 3) {
+                if (intervals[1] == 3) {
+                    chordName.innerHTML = notesToParse[0][1] + " Diminished"
+                }
+                if (intervals[1] == 4) {
+                    chordName.innerHTML = notesToParse[0][1] + " Minor"
+                }
+                //1st Inversion Major Chord
+                if (intervals[1] == 5) {
+                    chordName.innerHTML = notesToParse[2][1] + " Major - 1st Inversion"
+                }
+                
+            }
+            //Perfect 4th
+            if (intervals[0] == 5) {
+                if (intervals[1] == 2) {
+                    chordName.innerHTML = notesToParse[0][1] + "sus4"
+                }
+            }
+            //Major 2nd
+            if (intervals[0] == 2) {
+                if (intervals[1] == 5) {
+                    chordName.innerHTML = notesToParse[0][1] + "sus2"
+                }
+            }
+            //Perfect 5th
+            if (intervals[0] == 7) {
+                if (intervals[1] == 5) {
+                    chordName.innerHTML = notesToParse[0][1] + "5"
+                }
+            }
+            
+        }
+
+
 
     }
 }
@@ -194,27 +266,6 @@ function checkInterval(realValue) {
             break;
     }
 }
-
-// function showChordName(pickedLine) {
-//     if (bassButton.active === 1) {
-//         if (sharpButton.active == 1) {
-//             chordName.innerHTML = pickedLine.bassValue[1] + '#';
-//         } else if (flatButton.active == 1) {
-//             chordName.innerHTML = pickedLine.bassValue[1] + 'b';
-//         } else {
-//             chordName.innerHTML = pickedLine.bassValue[1];
-//         }
-//     } else {
-//         if (sharpButton.active == 1) {
-//             chordName.innerHTML = pickedLine.trebleValue[1] + '#';
-//         } else if (flatButton.active == 1) {
-//             chordName.innerHTML = pickedLine.trebleValue[1] + 'b';
-//         } else {
-//             chordName.innerHTML = pickedLine.trebleValue[1];
-//         }
-//     }
-
-// }
 
 
 
