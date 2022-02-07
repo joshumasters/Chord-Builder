@@ -205,6 +205,12 @@ function doTheory(notesToParse) {
                 if (intervals[1] == 2) {
                     chordName.innerHTML = notesToParse[0][1] + "sus4"
                 }
+                if (intervals[1] == 3) {
+                    chordName.innerHTML = notesToParse[1][1] + " Minor - 2nd Inversion"
+                }
+                if (intervals[1] == 4) {
+                    chordName.innerHTML = notesToParse[1][1] + " Major - 2nd Inversion"
+                }
             }
             //Major 2nd
             if (intervals[0] == 2) {
